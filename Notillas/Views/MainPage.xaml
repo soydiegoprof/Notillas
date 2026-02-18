@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Notillas.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:Notillas.Models"
+    Title="Notillas">
+
+    <Grid Padding="18" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="10">
+        <Label FontAttributes="Bold" FontSize="34" Text="Notillas" TextColor="{StaticResource PrimaryDark}" />
+
+        <Label Grid.Row="1" Text="Título" />
+        <Entry Grid.Row="2"
+               BackgroundColor="White"
+               Placeholder="Ej. Reunión"
+               Text="{Binding TitleInput}"
+               TextColor="{StaticResource TextPrimary}" />
+
+        <Editor Grid.Row="3"
+                AutoSize="TextChanges"
+                BackgroundColor="White"
+                HeightRequest="110"
+                Placeholder="Escribe tu nota..."
+                Text="{Binding ContentInput}"
+                TextColor="{StaticResource TextPrimary}" />
+
+        <Frame Grid.Row="4" BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Primary}" CornerRadius="12" Padding="8">
+            <CollectionView ItemsSource="{Binding Notes}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label HorizontalOptions="Center" Margin="0,20" Opacity="0.7" Text="Todavía no hay notas." />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Note">
+                        <Grid ColumnDefinitions="*,Auto" Padding="6">
+                            <VerticalStackLayout>
+                                <Label FontAttributes="Bold" Text="{Binding Title}" />
+                                <Label FontSize="12" LineBreakMode="TailTruncation" MaxLines="2" Opacity="0.85" Text="{Binding Content}" />
+                                <Label FontSize="11" Opacity="0.6" Text="{Binding UpdatedAt, StringFormat='Actualizada: {0:dd/MM/yyyy HH:mm}'}" />
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                                <Button Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCommand}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="12"
+                                        Text="Editar" />
+                                <Button BackgroundColor="#9A2D2D"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCommand}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="12"
+                                        Text="Borrar"
+                                        TextColor="White" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
+
+        <HorizontalStackLayout Grid.Row="5" Spacing="8">
+            <Button Command="{Binding SaveNoteCommand}" HorizontalOptions="Fill" Text="Guardar" />
+            <Button BackgroundColor="#E7DCA6" Command="{Binding ClearInputsCommand}" Text="Limpiar" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>
